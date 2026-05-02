@@ -1,7 +1,7 @@
 use ed25519_dalek::{Signer, SigningKey, VerifyingKey};
 use rand::rngs::OsRng;
 
-use super::PairingError;
+use super::{PairingError, check_error, check_state};
 use crate::crypto::srp::{SrpClient, SrpProof};
 use crate::crypto::{hap_decrypt, hap_encrypt, hkdf_derive};
 use crate::tlv::{self, TlvMap, TlvType};
@@ -230,29 +230,6 @@ impl PairSetupM5 {
             controller_ltpk: controller_ltpk.to_bytes(),
         })
     }
-}
-
-fn check_state(tlvs: &TlvMap, expected: u8) -> Result<(), PairingError> {
-    let state = tlvs
-        .get(&TlvType::State)
-        .and_then(|v| v.first().copied())
-        .unwrap_or(0);
-    if state != expected {
-        return Err(PairingError::UnexpectedState {
-            expected,
-            got: state,
-        });
-    }
-    Ok(())
-}
-
-fn check_error(tlvs: &TlvMap) -> Result<(), PairingError> {
-    if let Some(err) = tlvs.get(&TlvType::Error)
-        && let Some(&code) = err.first()
-    {
-        return Err(PairingError::AccessoryError(code));
-    }
-    Ok(())
 }
 
 fn is_valid_pin(pin: &str) -> bool {
