@@ -23,9 +23,9 @@ hkdf = "0.12"
 sha2 = "0.10"
 rand = "0.8"
 
-# SRP-6a (3072-bit, Apple's parameters)
-srp = "0.7.0-rc.3"
-num-bigint = "0.4"
+# SRP-6a (3072-bit, Apple's parameters) — implemented directly, srp crate is
+# incompatible with Apple's variant (padding/proof differences)
+num-bigint = { version = "0.4", features = ["rand"] }
 
 # mDNS discovery
 mdns-sd = "0.12"
