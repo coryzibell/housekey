@@ -36,14 +36,22 @@ pub fn hap_nonce(label: &[u8; 8]) -> Nonce {
     Nonce::from(nonce)
 }
 
-pub fn hap_encrypt(key: &[u8; 32], nonce_label: &[u8; 8], plaintext: &[u8]) -> Result<Vec<u8>, CryptoError> {
+pub fn hap_encrypt(
+    key: &[u8; 32],
+    nonce_label: &[u8; 8],
+    plaintext: &[u8],
+) -> Result<Vec<u8>, CryptoError> {
     let cipher = ChaCha20Poly1305::new(key.into());
     cipher
         .encrypt(&hap_nonce(nonce_label), plaintext)
         .map_err(|_| CryptoError::EncryptionFailed)
 }
 
-pub fn hap_decrypt(key: &[u8; 32], nonce_label: &[u8; 8], ciphertext: &[u8]) -> Result<Vec<u8>, CryptoError> {
+pub fn hap_decrypt(
+    key: &[u8; 32],
+    nonce_label: &[u8; 8],
+    ciphertext: &[u8],
+) -> Result<Vec<u8>, CryptoError> {
     let cipher = ChaCha20Poly1305::new(key.into());
     cipher
         .decrypt(&hap_nonce(nonce_label), ciphertext)

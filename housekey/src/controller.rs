@@ -47,7 +47,11 @@ impl Controller {
         todo!()
     }
 
-    pub async fn pair(&mut self, accessory: &DiscoveredAccessory, pin: &str) -> Result<(), ControllerError> {
+    pub async fn pair(
+        &mut self,
+        accessory: &DiscoveredAccessory,
+        pin: &str,
+    ) -> Result<(), ControllerError> {
         todo!()
     }
 
