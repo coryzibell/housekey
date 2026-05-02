@@ -144,8 +144,8 @@ impl PairSetupM5 {
         sub_tlvs.insert(TlvType::Signature, signature.to_bytes().to_vec());
         let sub_tlv_bytes = tlv::encode(&sub_tlvs);
 
-        let encrypted = hap_encrypt(&encrypt_key, b"PS-Msg05", &sub_tlv_bytes)
-            .map_err(PairingError::Crypto)?;
+        let encrypted =
+            hap_encrypt(&encrypt_key, b"PS-Msg05", &sub_tlv_bytes).map_err(PairingError::Crypto)?;
 
         let mut tlvs = TlvMap::new();
         tlvs.insert(TlvType::State, vec![0x05]);
@@ -164,12 +164,12 @@ impl PairSetupM5 {
         check_state(&tlvs, 0x06)?;
         check_error(&tlvs)?;
 
-        let encrypted_data = tlvs
-            .get(&TlvType::EncryptedData)
-            .ok_or(PairingError::UnexpectedState {
-                expected: 0x06,
-                got: 0x00,
-            })?;
+        let encrypted_data =
+            tlvs.get(&TlvType::EncryptedData)
+                .ok_or(PairingError::UnexpectedState {
+                    expected: 0x06,
+                    got: 0x00,
+                })?;
 
         let encrypt_key = hkdf_derive(
             &self.session_key,
@@ -178,8 +178,8 @@ impl PairSetupM5 {
         )
         .map_err(PairingError::Crypto)?;
 
-        let decrypted = hap_decrypt(&encrypt_key, b"PS-Msg06", encrypted_data)
-            .map_err(PairingError::Crypto)?;
+        let decrypted =
+            hap_decrypt(&encrypt_key, b"PS-Msg06", encrypted_data).map_err(PairingError::Crypto)?;
 
         let sub_tlvs = tlv::decode(&decrypted)?;
 
@@ -247,10 +247,10 @@ fn check_state(tlvs: &TlvMap, expected: u8) -> Result<(), PairingError> {
 }
 
 fn check_error(tlvs: &TlvMap) -> Result<(), PairingError> {
-    if let Some(err) = tlvs.get(&TlvType::Error) {
-        if let Some(&code) = err.first() {
-            return Err(PairingError::AccessoryError(code));
-        }
+    if let Some(err) = tlvs.get(&TlvType::Error)
+        && let Some(&code) = err.first()
+    {
+        return Err(PairingError::AccessoryError(code));
     }
     Ok(())
 }

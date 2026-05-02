@@ -94,9 +94,7 @@ pub fn decode(data: &[u8]) -> Result<TlvMap, TlvError> {
         pos += len;
 
         if let Some(tlv_type) = TlvType::from_u8(tag) {
-            map.entry(tlv_type)
-                .or_default()
-                .extend_from_slice(value);
+            map.entry(tlv_type).or_default().extend_from_slice(value);
         }
     }
 

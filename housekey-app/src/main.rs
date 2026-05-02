@@ -3,8 +3,7 @@ fn main() -> iced::Result {
         .with_env_filter("housekey=debug,housekey_app=debug")
         .init();
 
-    iced::application("Housekey", App::update, App::view)
-        .run()
+    iced::application("Housekey", App::update, App::view).run()
 }
 
 #[derive(Default)]
